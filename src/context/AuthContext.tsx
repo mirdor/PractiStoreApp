@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import React, { createContext, useEffect, useReducer } from 'react';
-import cafeApi from '../api/cafeApi';
+import productsApi from '../api/productsApi';
 import { Usuario, LoginResponse, LoginData, RegisterData } from '../interfaces/appInterfaces';
 import { authReducer, AuthState } from './authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,7 +40,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Token exists
 
-    const res = await cafeApi.get<LoginResponse>('/auth');
+    const res = await productsApi.get<LoginResponse>('/auth');
 
     if (res.status !== 200) {
       return dispatch({ type: 'notAuthenticated' });
@@ -59,7 +59,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async ({ correo, nombre, password }: RegisterData) => {
     try {
-      const { data } = await cafeApi.post<LoginResponse>('/usuarios', {
+      const { data } = await productsApi.post<LoginResponse>('/usuarios', {
         correo,
         nombre,
         password,
@@ -82,7 +82,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async ({ correo, password }: LoginData) => {
     try {
-      const { data } = await cafeApi.post<LoginResponse>('/auth/login', { correo, password });
+      const { data } = await productsApi.post<LoginResponse>('/auth/login', { correo, password });
       dispatch({
         type: 'signup',
         payload: {

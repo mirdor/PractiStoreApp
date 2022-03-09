@@ -3,11 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const baseURL = 'https://rncafe-app-backend.herokuapp.com/api';
 
-const cafeApi = axios.create({
+const productsApi = axios.create({
   baseURL,
 });
 
-cafeApi.interceptors.request.use(async config => {
+productsApi.interceptors.request.use(async config => {
   const token = await AsyncStorage.getItem('token');
   if (token) {
     config.headers!['x-token'] = token;
@@ -16,4 +16,4 @@ cafeApi.interceptors.request.use(async config => {
   return config;
 });
 
-export default cafeApi;
+export default productsApi;
