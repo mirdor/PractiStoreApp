@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { Producto, ProductsResponse } from '../interfaces/appInterfaces';
-import productsApi from '../api/productsApi';
+import productsApi, { cafeFetch } from '../api/productsApi';
+import { ImagePickerResponse } from 'react-native-image-picker';
+import { AxiosError } from 'axios';
 
 type ProductsContextProps = {
   products: Producto[];
@@ -9,7 +11,7 @@ type ProductsContextProps = {
   updateProduct: (categoryId: string, productName: string, productId: string) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   loadProductById: (id: string) => Promise<Producto>;
-  uploadImage: (data: any, id: string) => Promise<void>;
+  uploadImage: (data: ImagePickerResponse, id: string) => Promise<void>;
 };
 
 export const ProductsContext = createContext({} as ProductsContextProps);
@@ -54,7 +56,33 @@ const ProductsProvider: React.FC = ({ children }) => {
 
     return res.data;
   };
-  const uploadImage = async (data: any, id: string) => {};
+  const uploadImage = async ({ assets }: ImagePickerResponse, id: string) => {
+    if (!assets) return;
+    const fileToUpload = {
+      uri: assets[0].uri,
+      type: assets[0].type,
+      name: assets[0].fileName,
+    };
+
+    console.log(fileToUpload);
+
+    const formData = new FormData();
+
+    formData.append('archivo', fileToUpload);
+
+    try {
+      const res = await cafeFetch(
+        `uploads/productos/${id}`,
+        'PUT',
+        'multipart/form-data',
+        formData,
+      );
+
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ProductsContext.Provider

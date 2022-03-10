@@ -86,7 +86,7 @@ const RegisterScreen = ({ navigation }: Props) => {
 
             <Text style={loginStyles.label}>Contraseña</Text>
             <TextInput
-              placeholder="********"
+              placeholder="Ingrese su contraseña"
               placeholderTextColor="#999"
               secureTextEntry
               underlineColorAndroid={globalColors.primary}

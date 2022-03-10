@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  RefreshControl,
   Alert,
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { ProductsStackParams } from '../navigation/ProductsStackNavigator';
 import { globalColors } from '../theme/loginTheme';
@@ -27,6 +27,8 @@ type Props = NativeStackScreenProps<ProductsStackParams, 'ProductScreen'>;
 const ProductScreen = ({ navigation, route }: Props) => {
   const { id = '', name = '' } = route.params;
 
+  const [tempUri, setTempUri] = useState<string>();
+
   const { categories, isLoading } = useCategories();
 
   const { _id, categoriaId, nombre, img, onChange, setFormValue } = useForm({
@@ -36,7 +38,7 @@ const ProductScreen = ({ navigation, route }: Props) => {
     img: '',
   });
 
-  const { loadProductById, addProduct, updateProduct } = useContext(ProductsContext);
+  const { loadProductById, addProduct, updateProduct, uploadImage } = useContext(ProductsContext);
 
   useEffect(() => {
     navigation.setOptions({
@@ -75,12 +77,48 @@ const ProductScreen = ({ navigation, route }: Props) => {
     );
   };
 
+  const takePhoto = () => {
+    launchCamera(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+      },
+      res => {
+        if (res.didCancel) return;
+        if (!res.assets) return;
+        if (!res.assets[0].uri) return;
+
+        setTempUri(res.assets[0].uri);
+
+        uploadImage(res, id);
+      },
+    );
+  };
+
+  const takePhotoFromGallery = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+      },
+      res => {
+        if (res.didCancel) return;
+        if (!res.assets) return;
+        if (!res.assets[0].uri) return;
+
+        setTempUri(res.assets[0].uri);
+
+        uploadImage(res, id);
+      },
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.imgContainer}>
-          {img.length > 0 ? (
-            <Image source={{ uri: img }} style={{ width: '100%', height: 250, borderRadius: 10 }} />
+          {img.length > 0 && !tempUri ? (
+            <Image source={{ uri: img }} style={{ width: '100%', height: 200, borderRadius: 10 }} />
           ) : (
             <Text>El producto aún no tiene imagen D:</Text>
           )}
@@ -111,17 +149,24 @@ const ProductScreen = ({ navigation, route }: Props) => {
           <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
             <TouchableOpacity
               style={{ paddingHorizontal: 20, paddingVertical: 15 }}
-              onPress={() => {}}
+              onPress={takePhoto}
               activeOpacity={0.7}>
               <Text style={styles.buttonText}>Cámara</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ paddingHorizontal: 20, paddingVertical: 15 }}
-              onPress={() => {}}
+              onPress={takePhotoFromGallery}
               activeOpacity={0.7}>
               <Text style={styles.buttonText}>Galería</Text>
             </TouchableOpacity>
           </View>
+        )}
+
+        {tempUri && (
+          <Image
+            source={{ uri: tempUri }}
+            style={{ width: '100%', height: 200, borderRadius: 10 }}
+          />
         )}
       </ScrollView>
     </View>
