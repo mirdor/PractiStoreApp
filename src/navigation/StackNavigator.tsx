@@ -5,12 +5,12 @@ import RegisterScreen from "../screens/RegisterScreen";
 import ProtectedScreen from "../screens/ProtectedScreen";
 import { AuthContext } from "../context/AuthContext";
 import LoadingScreen from "../screens/LoadingScreen";
-import ProductsStackNavigator from "./ProductsStackNavigator";
+import DrawerNavigator from "./DrawerNavigator";
 
 export type RootStackParams = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
-  ProductsNavigation: undefined;
+  DrawerNavigator: undefined;
   ProtectedScreen: undefined;
 };
 
@@ -35,10 +35,7 @@ const StackNavigator = () => {
         </>
       ) : (
         <>
-          <Stack.Screen
-            name='ProductsNavigation'
-            component={ProductsStackNavigator}
-          />
+          <Stack.Screen name='DrawerNavigator' component={DrawerNavigator} />
           <Stack.Screen name='ProtectedScreen' component={ProtectedScreen} />
         </>
       )}

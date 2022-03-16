@@ -16,6 +16,7 @@ import useForm from "../hooks/useForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../navigation/StackNavigator";
 import { AuthContext } from "../context/AuthContext";
+import Input from "../components/Input";
 
 type Props = NativeStackScreenProps<RootStackParams, "LoginScreen">;
 
@@ -38,7 +39,7 @@ const LoginScreen = ({ navigation }: Props) => {
   const handleLogin = () => {
     console.log({ email, password });
     Keyboard.dismiss();
-    signIn({ correo: email, password });
+    signIn({ correo: email.trim(), password: password.trim() });
   };
 
   return (
@@ -56,41 +57,25 @@ const LoginScreen = ({ navigation }: Props) => {
 
           <View style={{ ...loginStyles.container, height: 500 }}>
             <Text style={loginStyles.title}>Iniciar Sesión</Text>
-            <Text style={loginStyles.label}>Email</Text>
-            <TextInput
+
+            <Input
+              label='Email'
               placeholder='Ingrese su email...'
-              placeholderTextColor='#999'
-              underlineColorAndroid={globalColors.primary}
               keyboardType='email-address'
-              style={
-                Platform.OS === "ios"
-                  ? loginStyles.inputFieldIOS
-                  : loginStyles.inputField
-              }
-              selectionColor={globalColors.secondary}
-              autoCapitalize='none'
               autoCorrect={false}
-              onChangeText={(value) => onChange(value, "email")}
               value={email}
+              onChangeText={(value) => onChange(value, "email")}
               onSubmitEditing={handleLogin}
             />
 
-            <Text style={loginStyles.label}>Contraseña</Text>
-            <TextInput
-              placeholder='Ingrese su contraseña'
-              placeholderTextColor='#999'
-              secureTextEntry
-              underlineColorAndroid={globalColors.primary}
-              style={
-                Platform.OS === "ios"
-                  ? loginStyles.inputFieldIOS
-                  : loginStyles.inputField
-              }
-              selectionColor={globalColors.secondary}
-              autoCapitalize='none'
+            <Input
+              label='Contraseña'
+              placeholder='Ingrese su contraseña...'
               autoCorrect={false}
-              onChangeText={(value) => onChange(value, "password")}
+              autoCapitalize='none'
+              secureTextEntry
               value={password}
+              onChangeText={(value) => onChange(value, "password")}
               onSubmitEditing={handleLogin}
             />
 

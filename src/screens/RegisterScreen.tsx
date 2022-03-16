@@ -16,6 +16,7 @@ import useForm from "../hooks/useForm";
 import { RootStackParams } from "../navigation/StackNavigator";
 import { globalColors, loginStyles } from "../theme/loginTheme";
 import { AuthContext } from "../context/AuthContext";
+import Input from "../components/Input/index";
 
 type Props = NativeStackScreenProps<RootStackParams, "RegisterScreen">;
 
@@ -39,7 +40,11 @@ const RegisterScreen = ({ navigation }: Props) => {
   const handleRegister = () => {
     console.log({ name, email, password });
     Keyboard.dismiss();
-    signUp({ nombre: name, correo: email, password });
+    signUp({
+      nombre: name.trim(),
+      correo: email.trim(),
+      password: password.trim(),
+    });
   };
 
   return (
@@ -58,59 +63,34 @@ const RegisterScreen = ({ navigation }: Props) => {
           <View style={{ ...loginStyles.container, height: 550 }}>
             <Text style={loginStyles.title}>Regístrate</Text>
 
-            <Text style={loginStyles.label}>Nombre</Text>
-            <TextInput
+            <Input
+              label='Nombre'
               placeholder='Ingrese su nombre...'
-              placeholderTextColor='#999'
-              underlineColorAndroid={globalColors.primary}
-              style={
-                Platform.OS === "ios"
-                  ? loginStyles.inputFieldIOS
-                  : loginStyles.inputField
-              }
-              selectionColor={globalColors.secondary}
+              onChangeText={(value) => onChange(value, "name")}
+              onSubmitEditing={handleRegister}
+              value={name}
               autoCapitalize='words'
               autoCorrect={false}
-              onChangeText={(value) => onChange(value, "name")}
-              value={name}
-              onSubmitEditing={handleRegister}
             />
 
-            <Text style={loginStyles.label}>Email</Text>
-            <TextInput
+            <Input
+              label='Email'
               placeholder='Ingrese su email...'
-              placeholderTextColor='#999'
-              underlineColorAndroid={globalColors.primary}
-              keyboardType='email-address'
-              style={
-                Platform.OS === "ios"
-                  ? loginStyles.inputFieldIOS
-                  : loginStyles.inputField
-              }
-              selectionColor={globalColors.secondary}
+              onChangeText={(value) => onChange(value, "email")}
+              onSubmitEditing={handleRegister}
+              value={email}
               autoCapitalize='none'
               autoCorrect={false}
-              onChangeText={(value) => onChange(value, "email")}
-              value={email}
-              onSubmitEditing={handleRegister}
             />
 
-            <Text style={loginStyles.label}>Contraseña</Text>
-            <TextInput
-              placeholder='Ingrese su contraseña'
-              placeholderTextColor='#999'
-              secureTextEntry
-              underlineColorAndroid={globalColors.primary}
-              style={
-                Platform.OS === "ios"
-                  ? loginStyles.inputFieldIOS
-                  : loginStyles.inputField
-              }
-              selectionColor={globalColors.secondary}
-              autoCapitalize='none'
+            <Input
+              label='Contraseña'
+              placeholder='Ingrese su contraseña...'
               autoCorrect={false}
-              onChangeText={(value) => onChange(value, "password")}
+              autoCapitalize='none'
+              secureTextEntry
               value={password}
+              onChangeText={(value) => onChange(value, "password")}
               onSubmitEditing={handleRegister}
             />
 

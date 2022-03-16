@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   FlatList,
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  Button,
   RefreshControl,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -13,6 +12,7 @@ import { ProductsContext } from "../context/ProductsContext";
 import { ProductsStackParams } from "../navigation/ProductsStackNavigator";
 import { Producto } from "../types/appTypes";
 import { globalColors } from "../theme/loginTheme";
+import Fab from "../components/Fab";
 
 type Props = NativeStackScreenProps<ProductsStackParams, "ProductsScreen">;
 
@@ -20,20 +20,6 @@ const ProductsScreen = ({ navigation }: Props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { products, loadProducts } = useContext(ProductsContext);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={{ marginRight: 10 }}
-          onPress={() => navigation.navigate("ProductScreen", {})}
-        >
-          <Text>Agregar</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, []);
 
   const renderItem = (item: Producto) => {
     return (
@@ -47,7 +33,9 @@ const ProductsScreen = ({ navigation }: Props) => {
           })
         }
       >
-        <Text style={styles.productName}>{item.nombre}</Text>
+        <Text style={styles.productName} numberOfLines={1}>
+          {item.nombre}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -60,23 +48,28 @@ const ProductsScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <View style={{ flex: 1, marginHorizontal: 10 }}>
-      <FlatList
-        data={products}
-        keyExtractor={(p) => p._id}
-        renderItem={({ item }) => renderItem(item)}
-        ItemSeparatorComponent={() => <View style={styles.itemsSeparator} />}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            progressViewOffset={50}
-            progressBackgroundColor={globalColors.primary}
-            colors={[globalColors.text]}
-          />
-        }
+    <>
+      <View style={{ flex: 1, marginHorizontal: 10 }}>
+        <FlatList
+          data={products}
+          keyExtractor={(p) => p._id}
+          renderItem={({ item }) => renderItem(item)}
+          ItemSeparatorComponent={() => <View style={styles.itemsSeparator} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              progressBackgroundColor='white'
+              colors={[globalColors.primary]}
+            />
+          }
+        />
+      </View>
+      <Fab
+        iconName='add-outline'
+        onPress={() => navigation.navigate("ProductScreen", {})}
       />
-    </View>
+    </>
   );
 };
 
@@ -84,6 +77,8 @@ const styles = StyleSheet.create({
   productButton: {
     paddingHorizontal: 5,
     paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
   },
   productName: {
     fontSize: 18,

@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { Producto, ProductsResponse } from "../types/appTypes";
-import productsApi, { cafeFetch } from "../api/productsApi";
+import productsApi, { productsFetch } from "../api/productsApi";
 import { ImageInfo } from "expo-image-picker";
 
 type ProductsContextProps = {
@@ -12,7 +12,7 @@ type ProductsContextProps = {
     productName: string,
     productId: string
   ) => Promise<void>;
-  deleteProduct: (id: string) => Promise<void>;
+  deleteProduct: (id: string) => Promise<Producto>;
   loadProductById: (id: string) => Promise<Producto>;
   uploadImage: (data: ImageInfo, id: string) => Promise<void>;
 };
@@ -60,36 +60,37 @@ const ProductsProvider: React.FC = ({ children }) => {
       })
     );
   };
-  const deleteProduct = async (id: string) => {};
+  const deleteProduct = async (id: string): Promise<Producto> => {
+    const res = await productsApi.delete<Producto>(`/productos/${id}`);
+    setProducts([...products.filter((product) => product._id !== id)]);
+    return res.data;
+  };
   const loadProductById = async (id: string): Promise<Producto> => {
     const res = await productsApi.get<Producto>(`/productos/${id}`);
 
     return res.data;
   };
-  const uploadImage = async (
-    { uri, type = "image" }: ImageInfo,
-    id: string
-  ) => {
-    // const fileName = uri.split('/').pop();
-    // const fileToUpload = {
-    //   uri: uri,
-    //   type: type,
-    //   name: fileName || '',
-    // };
-    // console.log(fileToUpload);
-    // const formData = new FormData();
-    // formData.append('archivo', {uri,name:fileName, type});
-    // try {
-    //   const res = await cafeFetch(
-    //     `uploads/productos/${id}`,
-    //     'PUT',
-    //     'multipart/form-data',
-    //     formData,
-    //   );
-    //   console.log(res);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+  const uploadImage = async ({ uri }: ImageInfo, id: string) => {
+    const fileName = uri.split("/").pop();
+    const fileToUpload = {
+      uri,
+      type: "image/jpg",
+      name: fileName,
+    };
+    const formData = new FormData();
+    formData.append("archivo", fileToUpload as any);
+    try {
+      const res = await productsFetch(
+        `uploads/productos/${id}`,
+        "PUT",
+        "multipart/form-data",
+        formData
+      );
+
+      console.log(JSON.stringify(res, null, 2));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

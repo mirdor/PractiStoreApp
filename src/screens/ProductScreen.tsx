@@ -25,6 +25,8 @@ import { globalColors } from "../theme/loginTheme";
 import useCategories from "../hooks/useCategories";
 import useForm from "../hooks/useForm";
 import { ProductsContext } from "../context/ProductsContext";
+import Fab from "../components/Fab";
+import LoadingScreen from "./LoadingScreen";
 
 type Props = NativeStackScreenProps<ProductsStackParams, "ProductScreen">;
 
@@ -32,6 +34,8 @@ const ProductScreen = ({ navigation, route }: Props) => {
   const { id = "", name = "" } = route.params;
 
   const [tempUri, setTempUri] = useState<string>();
+
+  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
 
   const { categories, isLoading } = useCategories();
 
@@ -42,8 +46,13 @@ const ProductScreen = ({ navigation, route }: Props) => {
     img: "",
   });
 
-  const { loadProductById, addProduct, updateProduct, uploadImage } =
-    useContext(ProductsContext);
+  const {
+    loadProductById,
+    addProduct,
+    updateProduct,
+    uploadImage,
+    deleteProduct,
+  } = useContext(ProductsContext);
 
   useEffect(() => {
     navigation.setOptions({
@@ -64,6 +73,7 @@ const ProductScreen = ({ navigation, route }: Props) => {
       img: product.img || "",
       nombre,
     });
+    setIsLoadingProduct(false);
   };
 
   const saveOrUpdate = async () => {
@@ -111,87 +121,112 @@ const ProductScreen = ({ navigation, route }: Props) => {
     });
   };
 
+  const showDeleteAlert = () => {
+    Alert.alert(
+      "Eliminar producto",
+      "¿Desea eliminar el producto?",
+      [
+        { text: "Cancelar" },
+        { text: "Confirmar", onPress: () => removeProduct(id) },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const removeProduct = (id: string) => {
+    deleteProduct(id).then(() => {
+      navigation.pop();
+    });
+  };
+
+  if (isLoadingProduct) return <LoadingScreen />;
+
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.imgContainer}>
-          {img.length > 0 && !tempUri ? (
-            <Image
-              source={{ uri: img }}
-              style={{ width: "100%", height: 200, borderRadius: 10 }}
-            />
-          ) : (
-            <Text>El producto aún no tiene imagen D:</Text>
-          )}
-        </View>
-        <Text style={styles.label}>Nombre del producto: </Text>
-        <TextInput
-          placeholder='Producto...'
-          style={styles.textInput}
-          value={nombre}
-          onChangeText={(value) => onChange(value, "nombre")}
-        />
-
-        <Text style={styles.label}>Categoría: </Text>
-        {!isLoading ? (
-          <Picker
-            selectedValue={categoriaId}
-            onValueChange={(itemValue) => onChange(itemValue, "categoriaId")}
-          >
-            {categories.map((category) => (
-              <Picker.Item
-                key={category._id}
-                label={category.nombre}
-                value={category._id}
+    <>
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.imgContainer}>
+            {img.length > 0 || tempUri ? (
+              <Image
+                source={{ uri: tempUri ? tempUri : img }}
+                style={{ width: "100%", height: 200, borderRadius: 10 }}
               />
-            ))}
-          </Picker>
-        ) : (
-          <ActivityIndicator
-            style={{ marginVertical: 8 }}
-            color={globalColors.primary}
-            size={30}
-          />
-        )}
-        <Button
-          title='Guardar'
-          onPress={saveOrUpdate}
-          color={globalColors.primary}
-        />
-
-        {_id.length > 0 && (
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
-            <TouchableOpacity
-              style={{ paddingHorizontal: 20, paddingVertical: 15 }}
-              onPress={takePhoto}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.buttonText}>Cámara</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ paddingHorizontal: 20, paddingVertical: 15 }}
-              onPress={takePhotoFromGallery}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.buttonText}>Galería</Text>
-            </TouchableOpacity>
+            ) : (
+              <Text>El producto aún no tiene imagen D:</Text>
+            )}
           </View>
-        )}
-
-        {tempUri && (
-          <Image
-            source={{ uri: tempUri }}
-            style={{ width: "100%", height: 200, borderRadius: 10 }}
+          {_id.length > 0 && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                marginVertical: 10,
+              }}
+            >
+              <TouchableOpacity
+                style={{ paddingHorizontal: 20, paddingVertical: 15 }}
+                onPress={takePhoto}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.buttonText}>Cámara</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ paddingHorizontal: 20, paddingVertical: 15 }}
+                onPress={takePhotoFromGallery}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.buttonText}>Galería</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <Text style={styles.label}>Nombre del producto: </Text>
+          <TextInput
+            placeholder='Producto...'
+            style={styles.textInput}
+            value={nombre}
+            onChangeText={(value) => onChange(value, "nombre")}
           />
-        )}
-      </ScrollView>
-    </View>
+
+          <Text style={styles.label}>Categoría: </Text>
+          {!isLoading ? (
+            <Picker
+              selectedValue={categoriaId}
+              onValueChange={(itemValue) => onChange(itemValue, "categoriaId")}
+            >
+              {categories.map((category) => (
+                <Picker.Item
+                  key={category._id}
+                  label={category.nombre}
+                  value={category._id}
+                />
+              ))}
+            </Picker>
+          ) : (
+            <ActivityIndicator
+              style={{ marginVertical: 8 }}
+              color={globalColors.primary}
+              size={30}
+            />
+          )}
+          {_id.length > 0 && (
+            <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ paddingHorizontal: 20, paddingVertical: 15 }}
+                onPress={showDeleteAlert}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={{ ...styles.buttonText, color: globalColors.danger }}
+                >
+                  Eliminar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+      <Fab iconName='save-outline' onPress={saveOrUpdate} />
+    </>
   );
 };
 
@@ -207,8 +242,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#eee",
     borderRadius: 10,
-    marginBottom: 30,
     elevation: 10,
+    marginBottom: 15,
   },
   label: {
     fontSize: 16,

@@ -16,7 +16,7 @@ productsApi.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const cafeFetch = async (
+export const productsFetch = async (
   endPoint: string,
   method: Method,
   contentType: string,

@@ -7,6 +7,7 @@ export const globalColors = {
   blackBg: "#070410",
   darkGray: "#1E1924",
   altGray: "#47444B",
+  danger: "#de4300",
 };
 
 export const loginStyles = StyleSheet.create({
@@ -26,19 +27,6 @@ export const loginStyles = StyleSheet.create({
     color: globalColors.text,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  label: {
-    marginTop: 25,
-    color: globalColors.text,
-    fontSize: 16,
-  },
-  inputField: {
-    fontSize: 18,
-  },
-  inputFieldIOS: {
-    borderBottomColor: globalColors.primary,
-    borderBottomWidth: 2,
-    paddingBottom: 4,
   },
   buttonContainer: {
     marginTop: 40,
