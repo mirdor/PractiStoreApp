@@ -60,7 +60,7 @@ export const LoginInput = (props: LoginProps) => {
 };
 
 type Props = {
-  label: string;
+  label?: string;
   placeholder: string;
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
@@ -80,7 +80,8 @@ export const Input = (props: Props) => {
 
   return (
     <>
-      <Text style={styles.label}>{label}</Text>
+      {label && <Text style={styles.label}>{label}</Text>}
+
       <TextInput
         placeholder={placeholder}
         keyboardType={keyboardType}

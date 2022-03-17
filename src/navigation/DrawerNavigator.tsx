@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { globalColors } from "../theme/loginTheme";
 import CategoriesScreen from "../screens/CategoriesScreen";
 
-type RootDrawerParams = {
+export type RootDrawerParams = {
   ProductsNavigator: undefined;
   CategoriesScreen: undefined;
 };

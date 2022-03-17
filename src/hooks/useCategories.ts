@@ -24,6 +24,8 @@ const useCategories = () => {
   return {
     categories,
     isLoading,
+    setCategories,
+    getCategories,
   };
 };
 
