@@ -6,11 +6,16 @@ import { ImageInfo } from "expo-image-picker";
 type ProductsContextProps = {
   products: Producto[];
   loadProducts: () => Promise<void>;
-  addProduct: (categoryId: string, productName: string) => Promise<Producto>;
+  addProduct: (
+    categoryId: string,
+    productName: string,
+    price: number
+  ) => Promise<Producto>;
   updateProduct: (
     categoryId: string,
     productName: string,
-    productId: string
+    productId: string,
+    price: number
   ) => Promise<void>;
   deleteProduct: (id: string) => Promise<Producto>;
   loadProductById: (id: string) => Promise<Producto>;
@@ -33,11 +38,13 @@ const ProductsProvider: React.FC = ({ children }) => {
   };
   const addProduct = async (
     categoryId: string,
-    productName: string
+    productName: string,
+    price: number
   ): Promise<Producto> => {
     const res = await productsApi.post<Producto>("/productos", {
       nombre: productName,
       categoria: categoryId,
+      precio: price,
     });
 
     setProducts([...products, res.data]);
@@ -47,11 +54,13 @@ const ProductsProvider: React.FC = ({ children }) => {
   const updateProduct = async (
     categoryId: string,
     productName: string,
-    productId: string
+    productId: string,
+    price: number
   ) => {
     const res = await productsApi.put<Producto>(`/productos/${productId}`, {
       nombre: productName,
       categoria: categoryId,
+      precio: price,
     });
 
     setProducts(

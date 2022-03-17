@@ -16,7 +16,7 @@ import useForm from "../hooks/useForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../navigation/StackNavigator";
 import { AuthContext } from "../context/AuthContext";
-import Input from "../components/Input";
+import { LoginInput } from "../components/Input";
 
 type Props = NativeStackScreenProps<RootStackParams, "LoginScreen">;
 
@@ -58,7 +58,7 @@ const LoginScreen = ({ navigation }: Props) => {
           <View style={{ ...loginStyles.container, height: 500 }}>
             <Text style={loginStyles.title}>Iniciar Sesión</Text>
 
-            <Input
+            <LoginInput
               label='Email'
               placeholder='Ingrese su email...'
               keyboardType='email-address'
@@ -68,7 +68,7 @@ const LoginScreen = ({ navigation }: Props) => {
               onSubmitEditing={handleLogin}
             />
 
-            <Input
+            <LoginInput
               label='Contraseña'
               placeholder='Ingrese su contraseña...'
               autoCorrect={false}

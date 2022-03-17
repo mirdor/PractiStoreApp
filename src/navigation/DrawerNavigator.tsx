@@ -12,9 +12,11 @@ import Avatar from "../components/Avatar";
 import { styles } from "../theme/drawerTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { globalColors } from "../theme/loginTheme";
+import CategoriesScreen from "../screens/CategoriesScreen";
 
 type RootDrawerParams = {
   ProductsNavigator: undefined;
+  CategoriesScreen: undefined;
 };
 
 const Drawer = createDrawerNavigator<RootDrawerParams>();
@@ -34,6 +36,7 @@ const DrawerNavigator = () => {
         name='ProductsNavigator'
         component={ProductsStackNavigator}
       />
+      <Drawer.Screen name='CategoriesScreen' component={CategoriesScreen} />
     </Drawer.Navigator>
   );
 };
@@ -60,7 +63,7 @@ const InnerMenu = ({ navigation }: DrawerContentComponentProps) => {
       />
       <DrawerItem
         label='Categorías'
-        onPress={() => navigation.navigate("ProductsNavigator")}
+        onPress={() => navigation.navigate("CategoriesScreen")}
         icon={({ size }) => (
           <Ionicons
             name='file-tray-stacked-outline'

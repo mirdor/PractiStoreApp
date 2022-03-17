@@ -16,7 +16,7 @@ import useForm from "../hooks/useForm";
 import { RootStackParams } from "../navigation/StackNavigator";
 import { globalColors, loginStyles } from "../theme/loginTheme";
 import { AuthContext } from "../context/AuthContext";
-import Input from "../components/Input/index";
+import { LoginInput } from "../components/Input/index";
 
 type Props = NativeStackScreenProps<RootStackParams, "RegisterScreen">;
 
@@ -63,7 +63,7 @@ const RegisterScreen = ({ navigation }: Props) => {
           <View style={{ ...loginStyles.container, height: 550 }}>
             <Text style={loginStyles.title}>Regístrate</Text>
 
-            <Input
+            <LoginInput
               label='Nombre'
               placeholder='Ingrese su nombre...'
               onChangeText={(value) => onChange(value, "name")}
@@ -73,7 +73,7 @@ const RegisterScreen = ({ navigation }: Props) => {
               autoCorrect={false}
             />
 
-            <Input
+            <LoginInput
               label='Email'
               placeholder='Ingrese su email...'
               onChangeText={(value) => onChange(value, "email")}
@@ -83,7 +83,7 @@ const RegisterScreen = ({ navigation }: Props) => {
               autoCorrect={false}
             />
 
-            <Input
+            <LoginInput
               label='Contraseña'
               placeholder='Ingrese su contraseña...'
               autoCorrect={false}

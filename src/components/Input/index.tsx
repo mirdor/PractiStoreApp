@@ -11,7 +11,7 @@ import React from "react";
 import { globalColors } from "../../theme/loginTheme";
 import { styles } from "./styles";
 
-type Props = {
+type LoginProps = {
   label: string;
   placeholder: string;
   keyboardType?: KeyboardTypeOptions;
@@ -25,7 +25,7 @@ type Props = {
   secureTextEntry?: boolean;
 };
 
-const Input = (props: Props) => {
+export const LoginInput = (props: LoginProps) => {
   const {
     label,
     placeholder,
@@ -40,7 +40,7 @@ const Input = (props: Props) => {
 
   return (
     <>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.labelLogin}>{label}</Text>
       <TextInput
         placeholder={placeholder}
         placeholderTextColor='#999'
@@ -59,4 +59,37 @@ const Input = (props: Props) => {
   );
 };
 
-export default Input;
+type Props = {
+  label: string;
+  placeholder: string;
+  keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
+  onChangeText: (value: string) => void;
+  value: string;
+};
+
+export const Input = (props: Props) => {
+  const {
+    label,
+    placeholder,
+    keyboardType = "default",
+    autoCapitalize = "none",
+    onChangeText,
+    value,
+  } = props;
+
+  return (
+    <>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput
+        placeholder={placeholder}
+        keyboardType={keyboardType}
+        style={styles.textInput}
+        selectionColor={globalColors.secondary}
+        autoCapitalize={autoCapitalize}
+        onChangeText={onChangeText}
+        value={value}
+      />
+    </>
+  );
+};

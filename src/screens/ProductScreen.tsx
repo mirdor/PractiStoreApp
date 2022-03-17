@@ -27,6 +27,7 @@ import useForm from "../hooks/useForm";
 import { ProductsContext } from "../context/ProductsContext";
 import Fab from "../components/Fab";
 import LoadingScreen from "./LoadingScreen";
+import { Input } from "../components/Input";
 
 type Props = NativeStackScreenProps<ProductsStackParams, "ProductScreen">;
 
@@ -35,16 +36,21 @@ const ProductScreen = ({ navigation, route }: Props) => {
 
   const [tempUri, setTempUri] = useState<string>();
 
-  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+  // if screen should be to add a new product or to edit an existing one
+  const [isLoadingProduct, setIsLoadingProduct] = useState(
+    id.length > 0 ? true : false
+  );
 
   const { categories, isLoading } = useCategories();
 
-  const { _id, categoriaId, nombre, img, onChange, setFormValue } = useForm({
-    _id: id,
-    categoriaId: "",
-    nombre: name,
-    img: "",
-  });
+  const { _id, categoriaId, nombre, precio, img, onChange, setFormValue } =
+    useForm({
+      _id: id,
+      categoriaId: "",
+      nombre: name,
+      img: "",
+      precio: 0,
+    });
 
   const {
     loadProductById,
@@ -72,24 +78,21 @@ const ProductScreen = ({ navigation, route }: Props) => {
       categoriaId: product.categoria._id,
       img: product.img || "",
       nombre,
+      precio: product.precio,
     });
     setIsLoadingProduct(false);
   };
 
   const saveOrUpdate = async () => {
     if (id.length > 0) {
-      updateProduct(categoriaId, nombre, id);
+      updateProduct(categoriaId, nombre, id, precio);
     } else {
       const tempCategoriaId = categoriaId || categories[0]._id;
 
-      const newProduct = await addProduct(tempCategoriaId, nombre);
+      const newProduct = await addProduct(tempCategoriaId, nombre, precio);
       onChange(newProduct._id, "_id");
     }
-    Alert.alert(
-      "Registro exitoso",
-      "Si aún no añade una imagen, puede realizarlo con los botones en la parte inferior",
-      [{ text: "Cerrar" }]
-    );
+    Alert.alert("Aviso", "Actualización exitosa", [{ text: "Cerrar" }]);
   };
 
   const takePhoto = () => {
@@ -179,12 +182,20 @@ const ProductScreen = ({ navigation, route }: Props) => {
               </TouchableOpacity>
             </View>
           )}
-          <Text style={styles.label}>Nombre del producto: </Text>
-          <TextInput
-            placeholder='Producto...'
-            style={styles.textInput}
-            value={nombre}
+
+          <Input
+            label='Nombre del producto:'
             onChangeText={(value) => onChange(value, "nombre")}
+            placeholder='Producto...'
+            value={nombre}
+          />
+
+          <Input
+            label='Precio:'
+            onChangeText={(value) => onChange(value, "precio")}
+            placeholder='Ingrese el precio...'
+            value={precio.toString()}
+            keyboardType='decimal-pad'
           />
 
           <Text style={styles.label}>Categoría: </Text>
