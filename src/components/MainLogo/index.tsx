@@ -5,7 +5,7 @@ import { styles } from "./styles";
 const MainLogo = () => {
   return (
     <View style={styles.container}>
-      <Image source={require("../../assets/logo.png")} style={styles.img} />
+      <Image source={require("../../assets/logoFull.png")} style={styles.img} />
     </View>
   );
 };

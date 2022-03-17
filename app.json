@@ -4,9 +4,9 @@
     "slug": "PractiStoreApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/practistore-icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/practistore-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/practistore-adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
